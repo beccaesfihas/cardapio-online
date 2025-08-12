@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cardápio de Esfihas e Beirutes</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        #header-info {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #d32f2f;
+            padding-bottom: 20px;
+        }
+        #header-info h1 {
+            font-size: 2em;
+            color: #d32f2f;
+            margin: 0;
+        }
+        #header-info p {
+            margin: 5px 0;
+            font-size: 1em;
+            color: #555;
+        }
+        #header-info a {
+            color: #d32f2f;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        #header-info a:hover {
+            text-decoration: underline;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: #d32f2f;
+        }
+        .item-section {
+            margin-bottom: 30px;
+        }
+        .esfiha-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .esfiha-item:last-child {
+            border-bottom: none;
+        }
+        .esfiha-info {
+            flex-grow: 1;
+        }
+        .esfiha-nome {
+            font-weight: bold;
+        }
+        .item-descricao {
+            font-size: 0.9em;
+            color: #777;
+            margin-top: 4px;
+        }
+        .esfiha-preco {
+            color: #555;
+            display: block;
+            margin-top: 4px;
+        }
+        
+        /* Estilos do novo controle de quantidade */
+        .quantidade-control {
+            display: flex;
+            align-items: center;
+            margin-left: 10px;
+        }
+        .quantidade-control button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .quantidade-control button:hover {
+            background-color: #45a049;
+        }
+        .quantidade-control input {
+            width: 40px;
+            text-align: center;
+            border: 1px solid #ccc;
+            margin: 0 5px;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+
+        /* Estilos para o Carrinho */
+        #carrinho, #cliente-info {
+            margin-top: 20px;
+            border-top: 2px solid #d32f2f;
+            padding-top: 20px;
+        }
+        #cliente-info .form-group {
+            margin-bottom: 15px;
+        }
+        #cliente-info label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        #cliente-info input, #cliente-info select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        /* Novo estilo para a chave PIX, que estará oculta por padrão */
+        #pix-info {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-weight: bold;
+            display: none;
+        }
+        
+        /* Estilo para a opção de Retirada/Entrega */
+        .tipo-entrega {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .tipo-entrega label {
+            display: inline;
+        }
+
+        #carrinho-lista li {
+            list-style-type: none;
+            padding: 5px 0;
+            font-size: 1em;
+            display: flex;
+            justify-content: space-between;
+        }
+        #carrinho-lista {
+            padding: 0;
+            margin: 0;
+        }
+        #carrinho-total {
+            font-weight: bold;
+            font-size: 1.2em;
+            text-align: right;
+            margin-top: 10px;
+        }
+        #btn-finalizar-pedido {
+            background-color: #25d366;
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 15px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            font-size: 1.2em;
+            margin-top: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        #btn-finalizar-pedido:hover {
+            background-color: #128c7e;
+        }
+
+        /* Estilos do Rodapé */
+        footer {
+            text-align: center;
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #333;
+            color: #fff;
+            border-radius: 8px;
+        }
+        footer h3 {
+            margin: 0 0 5px;
+            font-size: 1.2em;
+            color: #fff;
+        }
+        footer p {
+            margin: 0;
+            font-size: 0.9em;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="header-info">
+            <h1>Becca Esfihas e Beirutes</h1>
+            <p>Telefone: <a href="tel:+5514997154719">14 997154719</a></p>
+            <p>Instagram: <a href="https://www.instagram.com/beccaesfihas_" target="_blank">@beccaesfihas_</a></p>
+        </div>
+        <div class="item-section">
+            <h2>Esfihas Abertas</h2>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">1-Carne</span>
+                    <span class="item-descricao">Carne moída temperada, tomate e cebola</span>
+                    <span class="esfiha-preco">R$ 5,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Carne', -1, 5.00)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Carne" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Carne', 1, 5.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Queijo</span>
+                    <span class="item-descricao">Queijo mussarela derretido e orégano</span>
+                    <span class="esfiha-preco">R$ 5,50</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Queijo', -1, 5.50)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Queijo" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Queijo', 1, 5.50)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Calabresa</span>
+                    <span class="item-descricao">Fatias de calabresa com cebola</span>
+                    <span class="esfiha-preco">R$ 6,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Calabresa', -1, 6.00)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Calabresa" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Calabresa', 1, 6.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Frango com Catupiry</span>
+                    <span class="item-descricao">Frango desfiado e cremoso Catupiry</span>
+                    <span class="esfiha-preco">R$ 6,50</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Frango com Catupiry', -1, 6.50)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Frango com Catupiry" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Frango com Catupiry', 1, 6.50)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Bacon com Queijo</span>
+                    <span class="item-descricao">Cubos de bacon frito com queijo mussarela</span>
+                    <span class="esfiha-preco">R$ 6,50</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Bacon com Queijo', -1, 6.50)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Bacon com Queijo" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Bacon com Queijo', 1, 6.50)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Milho com Catupiry</span>
+                    <span class="item-descricao">Milho verde com Catupiry</span>
+                    <span class="esfiha-preco">R$ 6,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Milho com Catupiry', -1, 6.00)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Milho com Catupiry" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Milho com Catupiry', 1, 6.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Palmito</span>
+                    <span class="item-descricao">Creme de palmito fresco</span>
+                    <span class="esfiha-preco">R$ 6,50</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Palmito', -1, 6.50)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Palmito" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Palmito', 1, 6.50)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Atum</span>
+                    <span class="item-descricao">Atum sólido com cebola</span>
+                    <span class="esfiha-preco">R$ 7,50</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Atum', -1, 7.50)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Atum" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Atum', 1, 7.50)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Presunto e Queijo</span>
+                    <span class="item-descricao">Mussarela e presunto picado</span>
+                    <span class="esfiha-preco">R$ 6,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Presunto e Queijo', -1, 6.00)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Presunto e Queijo" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Presunto e Queijo', 1, 6.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Escarola com Queijo</span>
+                    <span class="item-descricao">Escarola refogada e queijo mussarela</span>
+                    <span class="esfiha-preco">R$ 6,50</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Escarola com Queijo', -1, 6.50)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Escarola com Queijo" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Escarola com Queijo', 1, 6.50)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Brócolis</span>
+                    <span class="item-descricao">Brócolis com alho e queijo mussarela</span>
+                    <span class="esfiha-preco">R$ 6,50</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Brócolis', -1, 6.50)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Brócolis" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Brócolis', 1, 6.50)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Portuguesa</span>
+                    <span class="item-descricao">Presunto, ovo, ervilha, cebola e mussarela</span>
+                    <span class="esfiha-preco">R$ 7,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha Portuguesa', -1, 7.00)">-</button>
+                    <input type="number" id="quantidade-Esfiha Portuguesa" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha Portuguesa', 1, 7.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Aliche</span>
+                    <span class="item-descricao">Filé de aliche e tomate</span>
+                    <span class="esfiha-preco">R$ 8,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Aliche', -1, 8.00)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Aliche" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Aliche', 1, 8.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Cheddar</span>
+                    <span class="item-descricao">Creme de cheddar cremoso</span>
+                    <span class="esfiha-preco">R$ 6,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Cheddar', -1, 6.00)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Cheddar" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Cheddar', 1, 6.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Provolone</span>
+                    <span class="item-descricao">Queijo provolone derretido</span>
+                    <span class="esfiha-preco">R$ 6,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Provolone', -1, 6.00)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Provolone" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Provolone', 1, 6.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Chocolate</span>
+                    <span class="item-descricao">Chocolate ao leite derretido</span>
+                    <span class="esfiha-preco">R$ 7,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Chocolate', -1, 7.00)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Chocolate" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Chocolate', 1, 7.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Chocolate com Morango</span>
+                    <span class="item-descricao">Chocolate ao leite com fatias de morango</span>
+                    <span class="esfiha-preco">R$ 8,50</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Chocolate com Morango', -1, 8.50)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Chocolate com Morango" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Chocolate com Morango', 1, 8.50)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Brigadeiro</span>
+                    <span class="item-descricao">Creme de chocolate com granulado</span>
+                    <span class="esfiha-preco">R$ 7,50</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Brigadeiro', -1, 7.50)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Brigadeiro" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Brigadeiro', 1, 7.50)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Doce de Leite com Coco</span>
+                    <span class="item-descricao">Doce de leite com coco ralado</span>
+                    <span class="esfiha-preco">R$ 7,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Doce de Leite com Coco', -1, 7.00)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Doce de Leite com Coco" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Doce de Leite com Coco', 1, 7.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Banana com Canela</span>
+                    <span class="item-descricao">Banana com canela e açúcar</span>
+                    <span class="esfiha-preco">R$ 6,50</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Banana com Canela', -1, 6.50)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Banana com Canela" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Banana com Canela', 1, 6.50)">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="item-section">
+            <h2>Esfihas Especiais</h2>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">4 Queijos</span>
+                    <span class="item-descricao">Mussarela, provolone, parmesão e catupiry</span>
+                    <span class="esfiha-preco">R$ 8,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de 4 Queijos', -1, 8.00)">-</button>
+                    <input type="number" id="quantidade-Esfiha de 4 Queijos" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de 4 Queijos', 1, 8.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Peito de Peru com Requeijão</span>
+                    <span class="item-descricao">Fatias de peito de peru com requeijão cremoso</span>
+                    <span class="esfiha-preco">R$ 7,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Peito de Peru com Requeijão', -1, 7.00)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Peito de Peru com Requeijão" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Peito de Peru com Requeijão', 1, 7.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Pepperoni</span>
+                    <span class="item-descricao">Queijo mussarela com pepperoni</span>
+                    <span class="esfiha-preco">R$ 7,50</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Pepperoni', -1, 7.50)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Pepperoni" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Pepperoni', 1, 7.50)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Lombo com Catupiry</span>
+                    <span class="item-descricao">Lombo defumado com catupiry</span>
+                    <span class="esfiha-preco">R$ 7,50</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Esfiha de Lombo com Catupiry', -1, 7.50)">-</button>
+                    <input type="number" id="quantidade-Esfiha de Lombo com Catupiry" value="0" min="0">
+                    <button onclick="mudarQuantidade('Esfiha de Lombo com Catupiry', 1, 7.50)">+</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="item-section">
+            <h2>Beirutes</h2>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Beirute de Rosbife</span>
+                    <span class="item-descricao">Rosbife, queijo, alface, tomate e maionese</span>
+                    <span class="esfiha-preco">R$ 25,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Beirute de Rosbife', -1, 25.00)">-</button>
+                    <input type="number" id="quantidade-Beirute de Rosbife" value="0" min="0">
+                    <button onclick="mudarQuantidade('Beirute de Rosbife', 1, 25.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Beirute de Frango</span>
+                    <span class="item-descricao">Frango desfiado, queijo, alface, tomate e maionese</span>
+                    <span class="esfiha-preco">R$ 22,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Beirute de Frango', -1, 22.00)">-</button>
+                    <input type="number" id="quantidade-Beirute de Frango" value="0" min="0">
+                    <button onclick="mudarQuantidade('Beirute de Frango', 1, 22.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Beirute de Presunto</span>
+                    <span class="item-descricao">Presunto, queijo, ovo, alface, tomate e maionese</span>
+                    <span class="esfiha-preco">R$ 20,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Beirute de Presunto', -1, 20.00)">-</button>
+                    <input type="number" id="quantidade-Beirute de Presunto" value="0" min="0">
+                    <button onclick="mudarQuantidade('Beirute de Presunto', 1, 20.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Beirute Vegetariano</span>
+                    <span class="item-descricao">Queijo, palmito, ovo, alface, tomate e maionese</span>
+                    <span class="esfiha-preco">R$ 21,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Beirute Vegetariano', -1, 21.00)">-</button>
+                    <input type="number" id="quantidade-Beirute Vegetariano" value="0" min="0">
+                    <button onclick="mudarQuantidade('Beirute Vegetariano', 1, 21.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Beirute de Lombo</span>
+                    <span class="item-descricao">Lombo canadense, queijo, alface, tomate e maionese</span>
+                    <span class="esfiha-preco">R$ 26,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Beirute de Lombo', -1, 26.00)">-</button>
+                    <input type="number" id="quantidade-Beirute de Lombo" value="0" min="0">
+                    <button onclick="mudarQuantidade('Beirute de Lombo', 1, 26.00)">+</button>
+                </div>
+            </div>
+            <div class="esfiha-item">
+                <div class="esfiha-info">
+                    <span class="esfiha-nome">Beirute de Calabresa</span>
+                    <span class="item-descricao">Calabresa fatiada, queijo, alface, tomate e maionese</span>
+                    <span class="esfiha-preco">R$ 23,00</span>
+                </div>
+                <div class="quantidade-control">
+                    <button onclick="mudarQuantidade('Beirute de Calabresa', -1, 23.00)">-</button>
+                    <input type="number" id="quantidade-Beirute de Calabresa" value="0" min="0">
+                    <button onclick="mudarQuantidade('Beirute de Calabresa', 1, 23.00)">+</button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="carrinho">
+            <h2>Meu Pedido</h2>
+            <ul id="carrinho-lista"></ul>
+            <div id="carrinho-total">Total: R$ 0,00</div>
+        </div>
+
+        <div id="cliente-info">
+            <h2>Dados para o Pedido</h2>
+            <div class="form-group">
+                <label for="nome-cliente">Nome:</label>
+                <input type="text" id="nome-cliente" placeholder="Seu nome" required>
+            </div>
+            <div class="form-group">
+                <label>Tipo de Entrega:</label>
+                <div class="tipo-entrega">
+                    <label>
+                        <input type="radio" name="tipo-entrega" value="retirada" onchange="mostrarCampoEndereco()" checked> Retirada no Local
+                    </label>
+                    <label>
+                        <input type="radio" name="tipo-entrega" value="entrega" onchange="mostrarCampoEndereco()"> Entrega
+                    </label>
+                </div>
+            </div>
+            <div class="form-group" id="campo-endereco">
+                <label for="endereco-cliente">Endereço de Entrega:</label>
+                <input type="text" id="endereco-cliente" placeholder="Rua, número, bairro, complemento...">
+            </div>
+            <div class="form-group">
+                <label for="forma-pagamento">Forma de Pagamento:</label>
+                <select id="forma-pagamento" onchange="mostrarChavePix()" required>
+                    <option value="" disabled selected>Escolha uma opção</option>
+                    <option value="Dinheiro">Dinheiro</option>
+                    <option value="PIX">PIX</option>
+                    <option value="Cartão">Cartão (crédito/débito)</option>
+                </select>
+            </div>
+            <div id="pix-info">
+                Chave PIX: **14997154719**
+            </div>
+        </div>
+        <button id="btn-finalizar-pedido" onclick="finalizarPedido()">Enviar Pedido via WhatsApp</button>
+    </div>
+
+    <footer>
+        <h3>Horário de Funcionamento</h3>
+        <p>Segunda a Sexta: 18:00h às 23:00h</p>
+        <p>Sábado e Domingo: 18:00h às 00:00h</p>
+    </footer>
+
+    <script>
+        let carrinho = [];
+
+        function mudarQuantidade(nome, mudanca, preco) {
+            const inputId = `quantidade-${nome}`;
+            const input = document.getElementById(inputId);
+            
+            let quantidadeAtual = parseInt(input.value) || 0;
+            let novaQuantidade = quantidadeAtual + mudanca;
+
+            if (novaQuantidade < 0) {
+                novaQuantidade = 0;
+            }
+
+            input.value = novaQuantidade;
+            atualizarCarrinho();
+        }
+
+        function atualizarCarrinho() {
+            const listaCarrinho = document.getElementById('carrinho-lista');
+            const totalElement = document.getElementById('carrinho-total');
+            let total = 0;
+
+            carrinho = [];
+            listaCarrinho.innerHTML = '';
+
+            const inputsQuantidade = document.querySelectorAll('.quantidade-control input');
+
+            inputsQuantidade.forEach(input => {
+                const quantidade = parseInt(input.value);
+                const nome = input.id.replace('quantidade-', '');
+                const itemDiv = input.closest('.esfiha-item');
+                const precoTexto = itemDiv.querySelector('.esfiha-preco').textContent;
+                const preco = parseFloat(precoTexto.replace('R$ ', '').replace(',', '.'));
+
+                if (quantidade > 0) {
+                    carrinho.push({ nome: nome, preco: preco, quantidade: quantidade });
+
+                    const subtotal = preco * quantidade;
+                    const li = document.createElement('li');
+                    li.textContent = `${quantidade}x ${nome} - R$ ${subtotal.toFixed(2).replace('.', ',')}`;
+                    listaCarrinho.appendChild(li);
+                    total += subtotal;
+                }
+            });
+
+            totalElement.textContent = `Total: R$ ${total.toFixed(2).replace('.', ',')}`;
+        }
+        
+        // Nova função para mostrar a chave PIX
+        function mostrarChavePix() {
+            const formaPagamento = document.getElementById('forma-pagamento').value;
+            const pixInfoDiv = document.getElementById('pix-info');
+            
+            if (formaPagamento === 'PIX') {
+                pixInfoDiv.style.display = 'block';
+            } else {
+                pixInfoDiv.style.display = 'none';
+            }
+        }
+        
+        // Nova função para mostrar ou esconder o campo de endereço
+        function mostrarCampoEndereco() {
+            const tipoEntrega = document.querySelector('input[name="tipo-entrega"]:checked').value;
+            const campoEnderecoDiv = document.getElementById('campo-endereco');
+            
+            if (tipoEntrega === 'entrega') {
+                campoEnderecoDiv.style.display = 'block';
+            } else {
+                campoEnderecoDiv.style.display = 'none';
+            }
+        }
+
+        function finalizarPedido() {
+            atualizarCarrinho();
+
+            if (carrinho.length === 0) {
+                alert('Seu carrinho está vazio! Adicione itens para fazer o pedido.');
+                return;
+            }
+
+            const nomeCliente = document.getElementById('nome-cliente').value;
+            const formaPagamento = document.getElementById('forma-pagamento').value;
+            const tipoEntrega = document.querySelector('input[name="tipo-entrega"]:checked').value;
+            
+            let enderecoCliente = '';
+            if (tipoEntrega === 'entrega') {
+                enderecoCliente = document.getElementById('endereco-cliente').value;
+            } else {
+                enderecoCliente = 'Retirada no Local';
+            }
+
+            const chavePix = '14997154719'; // Sua chave PIX
+            const numeroTelefone = '5514997154719'; 
+
+            if (!nomeCliente || !formaPagamento) {
+                alert('Por favor, preencha seu nome e a forma de pagamento.');
+                return;
+            }
+            if (tipoEntrega === 'entrega' && !enderecoCliente) {
+                alert('Por favor, digite o endereço de entrega.');
+                return;
+            }
+
+            let mensagem = `Olá, gostaria de fazer um pedido!\n\n`;
+
+            // Listar os itens do pedido com cada item em uma nova linha
+            carrinho.forEach(item => {
+                const subtotal = item.preco * item.quantidade;
+                mensagem += `${item.quantidade}x ${item.nome} - R$ ${subtotal.toFixed(2).replace('.', ',')}\n`;
+            });
+            
+            let total = 0;
+            carrinho.forEach(item => {
+                total += item.preco * item.quantidade;
+            });
+            mensagem += `\n*Total do pedido:* R$ ${total.toFixed(2).replace('.', ',')}\n\n`;
+
+            // Listar os dados do cliente depois
+            mensagem += "--- Dados do Cliente ---\n";
+            mensagem += `*Nome:* ${nomeCliente}\n`;
+            mensagem += `*Endereço:* ${enderecoCliente}\n`;
+            mensagem += `*Pagamento:* ${formaPagamento}\n`;
+
+            // Adiciona a chave PIX na mensagem se for a opção escolhida
+            if (formaPagamento === 'PIX') {
+                mensagem += `*Chave PIX:* ${chavePix}\n`;
+            }
+
+            mensagem += "\nAguardando confirmação e informações para entrega. Obrigado!";
+
+            const mensagemCodificada = encodeURIComponent(mensagem);
+            const urlWhatsApp = `https://api.whatsapp.com/send?phone=${numeroTelefone}&text=${mensagemCodificada}`;
+
+            window.open(urlWhatsApp, '_blank');
+        }
+
+        // Adiciona um listener para atualizar o carrinho sempre que um campo for alterado
+        document.querySelectorAll('.quantidade-control input').forEach(input => {
+            input.addEventListener('change', atualizarCarrinho);
+        });
+
+        // Chama a função para esconder o campo de endereço quando a página carregar
+        document.addEventListener('DOMContentLoaded', mostrarCampoEndereco);
+    </script>
+</body>
+</html>
